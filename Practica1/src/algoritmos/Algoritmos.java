@@ -23,12 +23,23 @@ public class Algoritmos {
                     System.out.print(j+", ");
                 }*/
                 vector = insercion(vector);
-                System.out.println("Inicio Binaria: "+System.nanoTime());
-                busquedaBinaria(vector, (int)Math.floor(Math.random()*((int)Math.pow(10, i))));
-                System.out.println("Fin Binaria: "+System.nanoTime());
-                System.out.println("Inicio Secuencial: "+System.nanoTime());
-                busquedaSecuencial(vector, (int)Math.floor(Math.random()*((int)Math.pow(10, i))));
-                System.out.println("Fin Secuencial: "+System.nanoTime());
+                int comparacionesBinaria = 0;
+                int comparacionesSecuencial = 0;
+                int numeroBuscar = (int)Math.floor(Math.random()*((int)Math.pow(10, i)));
+                double inicioBinaria = (System.nanoTime())*Math.pow(10, -3);
+                comparacionesBinaria = busquedaBinaria(vector, numeroBuscar);
+                double finBinaria =  (System.nanoTime())*Math.pow(10, -3);
+                //System.out.println("Binaria: "+ (finBinaria - inicioBinaria));
+                //System.out.println("Comparaciones Binaria: "+ comparacionesBinaria);
+                
+                
+                double inicioSecuencial = (System.nanoTime())*Math.pow(10, -3);
+                comparacionesSecuencial = busquedaSecuencial(vector, numeroBuscar);
+                double finSecuencial = (System.nanoTime())*Math.pow(10, -3);
+                //System.out.println("Tiempo Secuencial: "+ (finSecuencial - inicioSecuencial));
+                //System.out.println("Comparaciones Secuencial: "+ comparacionesSecuencial);
+                
+                System.out.println((finBinaria - inicioBinaria)+";"+comparacionesBinaria+";"+(finSecuencial - inicioSecuencial)+";"+comparacionesSecuencial);
             }
         }
         
@@ -36,44 +47,53 @@ public class Algoritmos {
     }
             
     public static int busquedaBinaria(int vector[], int dato){ 
-        int n = vector.length; 
-        int centro,inf=0,sup=n-1; 
+        int n = vector.length;
+        int comparaciones = 0;
+        int centro,inf=0,sup=n-1;
         while(inf<=sup){ 
             centro=(sup+inf)/2; 
-            if(vector[centro]==dato) 
-                return centro; 
-            else if(dato < vector [centro] ){ 
+            if(vector[centro]==dato){
+                comparaciones++;
+                return comparaciones;
+            }
+            else if(dato < vector [centro] ){
+                comparaciones++;
                 sup=centro-1; 
-            } else { inf=centro+1; } 
+            } else { 
+                inf=centro+1; 
+                comparaciones++;
+            }  
         } 
-        return -1; 
+        return comparaciones; 
     }
     
-    public static int busquedaSecuencial(int []arreglo,int dato){
+    public static int busquedaSecuencial(int vector[],int dato){
         int posicion = -1;
-        for(int i = 0; i < arreglo.length; i++){//recorremos todo el arreglo
-            if(arreglo[i] == dato){//comparamos el elemento en el arreglo con el buscado
+        int comparaciones = 0;
+        for(int i = 0; i < vector.length; i++){//recorremos todo el arreglo
+            comparaciones++;
+            if(vector[i] == dato){//comparamos el elemento en el arreglo con el buscado
                 posicion = i;//Si es verdadero guardamos la posicion
                 break;//Para el ciclo
             }
         }
-        return posicion;
+        return comparaciones;
     }
     
-    public static int[] insercion(int A[]){
+    public static int[] insercion(int vector[]){
         int p, j;
         int aux;
-        for (p = 1; p < A.length; p++){ // desde el segundo elemento hasta
-              aux = A[p]; // el final, guardamos el elemento y
+        for (p = 1; p < vector.length; p++){ // desde el segundo elemento hasta
+              aux = vector[p]; // el final, guardamos el elemento y
               j = p - 1; // empezamos a comprobar con el anterior
-              while ((j >= 0) && (aux < A[j])){ // mientras queden posiciones y el
+              while ((j >= 0) && (aux < vector[j])){ // mientras queden posiciones y el
                                                 // valor de aux sea menor que los
-                             A[j + 1] = A[j];   // de la izquierda, se desplaza a
+                             vector[j + 1] = vector[j];   // de la izquierda, se desplaza a
                              j--;               // la derecha
               }
-              A[j + 1] = aux; // colocamos aux en su sitio
+              vector[j + 1] = aux; // colocamos aux en su sitio
         }
-        return A;
+        return vector;
     }
     
 }

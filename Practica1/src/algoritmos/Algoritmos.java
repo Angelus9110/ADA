@@ -26,16 +26,16 @@ public class Algoritmos {
                 int comparacionesBinaria = 0;
                 int comparacionesSecuencial = 0;
                 int numeroBuscar = (int)Math.floor(Math.random()*((int)Math.pow(10, i)));
-                double inicioBinaria = (System.nanoTime())*Math.pow(10, -3);
+                long inicioBinaria = System.nanoTime();
                 comparacionesBinaria = busquedaBinaria(vector, numeroBuscar);
-                double finBinaria =  (System.nanoTime())*Math.pow(10, -3);
+                long finBinaria =  System.nanoTime();
                 //System.out.println("Binaria: "+ (finBinaria - inicioBinaria));
                 //System.out.println("Comparaciones Binaria: "+ comparacionesBinaria);
                 
                 
-                double inicioSecuencial = (System.nanoTime())*Math.pow(10, -3);
+                long inicioSecuencial = System.nanoTime();
                 comparacionesSecuencial = busquedaSecuencial(vector, numeroBuscar);
-                double finSecuencial = (System.nanoTime())*Math.pow(10, -3);
+                long finSecuencial = System.nanoTime();
                 //System.out.println("Tiempo Secuencial: "+ (finSecuencial - inicioSecuencial));
                 //System.out.println("Comparaciones Secuencial: "+ comparacionesSecuencial);
                 

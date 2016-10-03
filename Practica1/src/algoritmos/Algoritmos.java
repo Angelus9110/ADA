@@ -4,6 +4,11 @@
  * and open the template in the editor.
  */
 package algoritmos;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.*;
 
 /**
@@ -12,9 +17,23 @@ import java.math.*;
  */
 public class Algoritmos {
     
-    public static void main(String args[]){
+    public static void main(String args[]) throws IOException{
+        
+        FileWriter ficheroN = null;
+        PrintWriter pwN = null;
+        FileWriter ficheroM = null;
+        PrintWriter pwM = null;
+            try{
+                ficheroN = new FileWriter("ResultadoNormal.csv");
+                ficheroM = new FileWriter("ResultadoMedias.csv");
+                pwN = new PrintWriter(ficheroN);
+                pwM = new PrintWriter(ficheroM);
+                //for (int l = 0; l < 10; l++)
+        pwN.println("Tamaño"+";"+"Tiempo binaria"+";"+"comparacionesBinaria"+";"+"Tiempo Secuencial"+";"+"comparacionesSecuencial");       
         for (int i = 1; i <= 5; i++){
-            int[] vector = new int[((int)Math.pow(10, i))];
+            int size = ((int)Math.pow(10, i));
+            int[] vector = new int[size];
+            
             for (int k = 0; k < 30; k++){
                 for (int j = 0; j < vector.length; j++){
                     vector[j] = (int)Math.floor(Math.random()*((int)Math.pow(10, i)));
@@ -39,10 +58,27 @@ public class Algoritmos {
                 //System.out.println("Tiempo Secuencial: "+ (finSecuencial - inicioSecuencial));
                 //System.out.println("Comparaciones Secuencial: "+ comparacionesSecuencial);
                 
-                System.out.println((finBinaria - inicioBinaria)+";"+comparacionesBinaria+";"+(finSecuencial - inicioSecuencial)+";"+comparacionesSecuencial);
+                pw.println(size+";"+(finBinaria - inicioBinaria)+";"+comparacionesBinaria+";"+(finSecuencial - inicioSecuencial)+";"+comparacionesSecuencial);
+                
+                
+                
+                
+                //System.out.println((finBinaria - inicioBinaria)+";"+comparacionesBinaria+";"+(finSecuencial - inicioSecuencial)+";"+comparacionesSecuencial);
             }
         }
-        
+        } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            finally {
+                    try {
+                    // Nuevamente aprovechamos el finally para 
+                    // asegurarnos que se cierra el fichero.
+                        if (null != fichero)
+                        fichero.close();
+                    } catch (Exception e2) {
+                       e2.printStackTrace();
+                    }
+                }
         
     }
             

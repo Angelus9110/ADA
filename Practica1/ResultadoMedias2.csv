@@ -1,0 +1,6 @@
+Tamaño;Tiempo binaria;comparacionesBinaria;Tiempo Secuencial;comparacionesSecuencial
+10;1506;2;352;7
+100;131332;8;1517;69
+1000;329694;17;11259;733
+10000;9406177;29;40271;7821
+100000;938012891;45;53113;71098

@@ -1,32 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package algoritmos;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.*;
 
 /**
  *
- * @author angel
+ * @author Angel Posada y Daniel Diaz
  */
-public class Algoritmos2 {
+public class Etapa2 {
+    private static long comparacionesInsercion;
     
-    public static void main(String args[]) throws IOException{
+    public void Etapa2() throws IOException{
         
-        FileWriter ficheroN = null;
-        FileWriter ficheroM = null;
-        PrintWriter pwN = null;
-        PrintWriter pwM = null;
-        int sumaComparacionesB = 0;
-        int sumaComparacionesS = 0;
-        long sumaTiempoB = 0; 
-        long sumaTiempoS = 0;
+        int size, sumaComparacionesS, comparacionesSecuencial, numeroBuscar;
+        int[] vector, vectorOrdenado;
+        long tiempoB, tiempoS, tiempoOrd, sumaTiempoB, sumaTiempoS, inicioBinaria, finBinaria
+                , inicioSecuencial, finSecuencial, inicioOrdenacion, finOrdenacion, sumaComparacionesB
+                , comparacionesBinaria;
+        FileWriter ficheroN = null, ficheroM = null;
+        PrintWriter pwN = null, pwM = null;
         int repeticiones = 30;
                 
         try{
@@ -35,39 +27,49 @@ public class Algoritmos2 {
             pwN = new PrintWriter(ficheroN);
             pwM = new PrintWriter(ficheroM);
             
-            pwN.println("Tamaño"+";"+"Tiempo binaria"+";"+"comparacionesBinaria"+";"+"Tiempo Secuencial"+";"+"comparacionesSecuencial");
-            pwM.println("Tamaño"+";"+"Tiempo binaria"+";"+"comparacionesBinaria"+";"+"Tiempo Secuencial"+";"+"comparacionesSecuencial");
+            String encabezado = "Tamano"+";"+"Tiempo binaria"+";"+"comparacionesBinaria"+";"+"Tiempo Secuencial"+";"+"comparacionesSecuencial";
+            pwN.println(encabezado);
+            pwM.println(encabezado);
             
             for (int i = 1; i <= 5; i++){
-                int size = ((int)Math.pow(10, i));
-                int[] vector = new int[size];
-				int[] vectorOrdenado = new int[size];
-
+                
+                size = ((int)Math.pow(10, i));
+                vector = new int[size];
+                sumaComparacionesB = 0;
+                sumaComparacionesS = 0;
+                sumaTiempoB = 0;
+                sumaTiempoS = 0;
+                
                 for (int k = 0; k < repeticiones; k++){
+                    
                     for (int j = 0; j < vector.length; j++){
                         vector[j] = (int)Math.floor(Math.random()*((int)Math.pow(10, i)));
                     }
-
-					long inicioOrdenacion = System.nanoTime();
+                    
+                    comparacionesBinaria = 0; 
+                    comparacionesSecuencial = 0;
+                    tiempoB = 0;
+                    tiempoS = 0;
+                    
+                    inicioOrdenacion = System.nanoTime();
                     vectorOrdenado = insercion(vector);
-					long finOrdenacion =  System.nanoTime();
-					
-                    int comparacionesBinaria = 0, comparacionesSecuencial = 0;
-                    long tiempoB = 0;
-                    long tiempoS = 0;
+                    finOrdenacion =  System.nanoTime();
+                    tiempoOrd = finOrdenacion - inicioOrdenacion;
                     
-                    int numeroBuscar = (int)Math.floor(Math.random()*((int)Math.pow(10, i)));
+                    numeroBuscar = (int)Math.floor(Math.random()*((int)Math.pow(10, i)));
                     
-                    long inicioBinaria = System.nanoTime();
+                    inicioBinaria = System.nanoTime();
                     comparacionesBinaria = busquedaBinaria(vectorOrdenado, numeroBuscar);
-                    long finBinaria =  System.nanoTime();
+                    finBinaria =  System.nanoTime();
+                    
                     tiempoB = finBinaria - inicioBinaria;
-                    sumaTiempoB = sumaTiempoB + tiempoB + (finOrdenacion-inicioOrdenacion);
-                    sumaComparacionesB = sumaComparacionesB + comparacionesBinaria;
+                    sumaTiempoB = sumaTiempoB + tiempoB + tiempoOrd;
+                    sumaComparacionesB = sumaComparacionesB + comparacionesBinaria + comparacionesInsercion;
 
-                    long inicioSecuencial = System.nanoTime();
+                    inicioSecuencial = System.nanoTime();
                     comparacionesSecuencial = busquedaSecuencial(vector, numeroBuscar);
-                    long finSecuencial = System.nanoTime();
+                    finSecuencial = System.nanoTime();
+                    
                     tiempoS = finSecuencial - inicioSecuencial;
                     sumaTiempoS = sumaTiempoS + tiempoS;
                     sumaComparacionesS = sumaComparacionesS + comparacionesSecuencial;
@@ -89,7 +91,6 @@ public class Algoritmos2 {
                        e2.printStackTrace();
                     }
             }
-        
     }
             
     public static int busquedaBinaria(int vector[], int dato){ 
@@ -129,21 +130,16 @@ public class Algoritmos2 {
     public static int[] insercion(int vector[]){
         int p, j;
         int aux;
-        int comparaciones = 0;
-        int asignaciones = 0;
+        comparacionesInsercion = 0;
         for (p = 1; p < vector.length; p++){
-              aux = vector[p];
-              j = p - 1;
-              comparaciones ++;
-              asignaciones ++;
-              while ((j >= 0) && (aux < vector[j])){
-                            comparaciones ++;
-                            asignaciones ++;              
-                            vector[j + 1] = vector[j];
-                            j--;
-                             
-              }
-              vector[j + 1] = aux;
+            aux = vector[p];
+            j = p - 1;
+            while ((j >= 0) && (aux < vector[j])){
+              comparacionesInsercion ++;              
+              vector[j + 1] = vector[j];
+              j--;     
+            }
+            vector[j + 1] = aux;
         }
         return vector;
     }

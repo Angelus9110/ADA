@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author angel
+ * @author Daniel Diaz y Angel Posada
  */
 public class ADAPractica2 {
 
@@ -22,17 +22,22 @@ public class ADAPractica2 {
     private static PrintWriter pw = null;
 
     /**
-     *
+     * Recibe los parametros por teclado, inicializa las variables y los arrays y ejecuta el metodo elegir
      * @param args
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        // TODO code application logic here
-        int suma = Integer.parseInt(JOptionPane.showInputDialog("Valor a buscar"));
-        String num[] = JOptionPane.showInputDialog("Valores en los que buscar (separados por espacio)").split(" ");
-        int numeros[] = new int[num.length];
+        String sumaCadena = JOptionPane.showInputDialog("Valor a buscar");
+        int suma = -1;
+        if(!sumaCadena.equals("")){
+            suma = Integer.parseInt(sumaCadena);
+        }
+        String[] num = JOptionPane.showInputDialog("Valores en los que buscar (separados por espacio)").split(" ");
+        int[] numeros = new int[num.length];
+        if(!num[0].equals("")){
         for (int i = 0; i < num.length; i++) {
             numeros[i] = Integer.parseInt(num[i]);
+        }
         }
         int pos = 0;
         int res = 0;
@@ -41,8 +46,7 @@ public class ADAPractica2 {
         try {
             fichero = new FileWriter("salida_p2_dandiaz_angposa.txt");
             pw = new PrintWriter(fichero);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
         }
 
         elegir(numeros, suma, pos, res, validos);
@@ -50,18 +54,17 @@ public class ADAPractica2 {
             if (null != fichero) {
                 fichero.close();
             }
-        } catch (Exception e2) {
-            e2.printStackTrace();
+        } catch (IOException e2) {
         }
     }
 
     /**
-     *
-     * @param numeros
-     * @param suma
-     * @param pos
-     * @param res
-     * @param validos
+     * Realiza la busqueda del valor mediante recursividad y backtracking
+     * @param numeros vector de números enteros positivos sin valores repetidos
+     * @param suma valor entero a obtener sumando elementos del vector
+     * @param pos valor entero que almacena la posición que estamos comprobando del vector
+     * @param res valor entero que almacena la suma de los resultados parciales
+     * @param validos vector de números enteros que almacena el subconjunto de números que son una posible solución
      * @throws IOException
      */
     public static void elegir(int numeros[], int suma, int pos, int res, Deque<Integer> validos) throws IOException {
@@ -80,18 +83,19 @@ public class ADAPractica2 {
     }
 
     /**
-     *
-     * @param validos
+     * Imprime las soluciones validas en un fichero
+     * @param validos array que representa el subconjunto de elementos validos
      * @throws IOException
      */
     public static void Imprimir(Deque<Integer> validos) throws IOException {
+        boolean primero = true;
         for (Integer valido : validos) {
-            System.out.print(valido + ", ");
-        }
-        System.out.println();
-
-        for (Integer valido : validos) {
-            pw.print(valido + ", ");
+            if(!primero){
+                pw.print(", "+valido);
+            }else{
+                pw.print(valido);
+                primero = false;
+            }
         }
         pw.println();
     }

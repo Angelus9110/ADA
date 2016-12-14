@@ -5,150 +5,102 @@
  */
 package ada.practica3;
 
-import java.awt.HeadlessException;
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.*;
 
-/**
- *
- * @author angel
- */
 public class ADAPractica3 {
 
-    private static File archivo = null;
-    private static FileReader fr = null;
-    private static BufferedReader br = null;
-    
-    private static FileReader fr2 = null;
-    private static BufferedReader br2 = null;
-    private static ArrayList<Character> nodeMatrix = new ArrayList<Character>();
-    /**
-     * 
-     * @param args 
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+    public final String fileName = "entrada2.txt";
+    public static int N = 900000;
+    public static ArrayList<Integer>[] g = new ArrayList[N];
+    public int[] visited = new int[N];
+    private static ArrayList<String> nodeMatrix = new ArrayList<String>();
 
-        try {
-            //String ficheroEntrada = JOptionPane.showInputDialog("Nombre fichero entrada");
-            //archivo = new File(ficheroEntrada);
-            archivo = new File("entrada.txt");
-            fr = new FileReader(archivo);
-            br = new BufferedReader(fr);
-                      
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!nodeMatrix.contains(line.charAt(4))){
-                    nodeMatrix.add(line.charAt(4));
-                }
-            }
-            
-            int adjacenceMatrix[][] = new int[nodeMatrix.size()][nodeMatrix.size()];
-            
-            for (int i = 0; i<adjacenceMatrix.length; i++){
-                for (int j = 0; j<adjacenceMatrix.length; j++){
-                    if (i == j){
-                        adjacenceMatrix[i][j] = 0;
-                    }
-                    else{       
-                        adjacenceMatrix[i][j] = -1;
-                    }
-                }
-            }
-            
-            fr2 = new FileReader(archivo);
-            br2 = new BufferedReader(fr2);
-            
-            while ((line = br2.readLine()) != null) {
-                adjacenceMatrix[nodeMatrix.indexOf(line.charAt(4))][nodeMatrix.indexOf(line.charAt(18))] = 1;
-            }
-            ArrayList<Integer> recorridos = new ArrayList<Integer>();
-            recorridos = recorridoAnchura(adjacenceMatrix);
-            
-            for (Integer recorrido : recorridos) {   
-                
-                if (recorrido != -1){
-                    System.out.println(nodeMatrix.get(recorrido));
-                }
-            }
-            
-            /*or (int i = 0; i<adjacenceMatrix.length; i++){
-                for (int j = 0; j<adjacenceMatrix.length; j++){
-                    
-                    System.out.print("|"+adjacenceMatrix[i][j]);
-                    
-                }
-                System.out.print("|");
-                System.out.println("");
-            }*/
-            
-        } catch (HeadlessException | IOException e) {
-            e.addSuppressed(e);
-        } finally {
-            try {
-                if (null != fr | null != fr2) {
-                    fr.close();
-                    fr2.close();
-                }
-            } catch (Exception e2) {
-                e2.addSuppressed(e2);
+    public static List<List<Integer>> scc(List<Integer>[] graph) {
+        int n = graph.length;
+        boolean[] used = new boolean[n];
+        List<Integer> order = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (!used[i]) {
+                dfs(graph, used, order, i);
             }
         }
+
+        List<Integer>[] reverseGraph = new List[n];
+        for (int i = 0; i < n; i++) {
+            reverseGraph[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j : graph[i]) {
+                reverseGraph[j].add(i);
+            }
+        }
+
+        List<List<Integer>> components = new ArrayList<>();
+        Arrays.fill(used, false);
+        Collections.reverse(order);
+
+        for (int u : order) {
+            if (!used[u]) {
+                List<Integer> component = new ArrayList<>();
+                dfs(reverseGraph, used, component, u);
+                components.add(component);
+            }
+        }
+
+        return components;
     }
-    public static ArrayList<Integer> recorridoAnchura(int adjacenceMatrix[][]) {
-        int nodoI = 0;
-    boolean[] visitiadoAnchura = new boolean[10];
-//Lista donde guardo los nodos recorridos
 
-        ArrayList<Integer> recorridos = new ArrayList<Integer>();
-
-//El nodo inicial ya está visitado
-
-        visitiadoAnchura[nodoI] = true;
-
-//Cola de visitas de los nodos adyacentes
-
-        ArrayList<Integer> cola = new ArrayList<Integer>();
-
-//Se lista el nodo como ya recorrido
-
-        recorridos.add(nodoI);
-
-//Se agrega el nodo a la cola de visitas
-
-        cola.add(nodoI);
-
-//Hasta que visite todos los nodos
-
-        while (!cola.isEmpty()) {
-
-            int j = cola.remove(0); //Se saca el primero nodo de la cola
-
-//Se busca en la matriz que representa el grafo los nodos adyacentes
-
-            for (int i = 0; i < adjacenceMatrix.length; i++) {
-
-//Si es un nodo adyacente y no está visitado entonces
-
-                if (adjacenceMatrix[j][i] == 1 && !visitiadoAnchura[i] && adjacenceMatrix[j][i] != -1) {
-
-                    cola.add(i);//Se agrega a la cola de visitas
-
-                    recorridos.add(i);//Se marca como recorrido
-
-                    visitiadoAnchura[i] = true;//Se marca como visitado
-
-                }
-
+    static void dfs(List<Integer>[] graph, boolean[] used, List<Integer> res, int u) {
+        used[u] = true;
+        for (int v : graph[u]) {
+            if (!used[v]) {
+                dfs(graph, used, res, v);
             }
-
         }
+        res.add(u);
+    }
 
-        return recorridos;//Devuelvo el recorrido del grafo en anchura
+    public void makeGraph() throws FileNotFoundException, IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        BufferedReader br2 = new BufferedReader(new FileReader(fileName));
+        String str;
+        for (int i = 0; i < N; i++) {
+            g[i] = new ArrayList<Integer>(1);
+            visited[i] = 0;
+        }
+        while ((str = br.readLine()) != null) {    
+            String[] usuarios = str.split(" ");
+            if (!nodeMatrix.contains(usuarios[0])) {
+                nodeMatrix.add(usuarios[0]);
+            }
+        }
+        N = nodeMatrix.size();
+        while ((str = br2.readLine()) != null) {  
+            String[] usuarios = str.split(" ");
+            Integer i = nodeMatrix.indexOf(usuarios[0]);
+            Integer j = nodeMatrix.indexOf(usuarios[2]);
+            g[i].add(j);
+        }
+        br.close();
+    }
+    // Usage example
 
+    public static void main(String[] args) throws IOException {
+        ADAPractica3 k = new ADAPractica3();
+        k.makeGraph();
+
+        List<List<Integer>> components = scc(g);
+        for (List<Integer> component : components) {
+            if (component.size() >= 3) {
+                for (Integer integer : component) {
+                    System.out.print(nodeMatrix.get(integer) + " ");
+                }
+                System.out.println("");
+            }
+        }
     }
 }

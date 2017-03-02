@@ -1,0 +1,11 @@
+UserA follows UserB
+UserB follows UserA
+UserA follows UserD
+UserD follows UserA
+UserB follows UserE
+UserE follows UserG
+UserG follows UserF
+UserF follows UserE
+UserA follows UserC
+UserC follows UserA
+UserF follows UserD
